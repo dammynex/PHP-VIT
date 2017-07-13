@@ -112,11 +112,6 @@ VIT variable can be filtered using PHP functions
 
 PHP
 ```php
-
-function wrapHTML($str, $tagname) {
-    return '<' . $tagname . '>' . $str . '</' . $tagname . '>';
-}
-
 $vit->assign('name', 'dammy');
 ```
 VIT
@@ -126,17 +121,14 @@ VIT
 
 {{!-- With args --}}
 {{name | substr(0, 3) }}
-
-{{!-- wrap html -}}
-{{name | strtoupper | wrapHTML }}
 ```
 
 Result:
+```
 DAMMY
 
 DAM
-
-__DAMMY__
+```
 
 
 #### Includes
