@@ -80,12 +80,22 @@ Hey, this is {{ info[title] }} and we are working on the {{ info[type] }}
 
 Looping through arrays
 ```php
+#multi-dimensional array
 $vit->assign('lists', ['a', 'b', 'c', 'd']);
+
+#associative array
+$vit->assign('data', ['name' => 'Dammy', 'nick' => 'nex', 'age' => '10', 'lang' => 'PHP']);
 ```
 And in vit
 ```
-{{#each $lists as $list}}
+{{!-- Multi Dimensional --}}
+{{#each $lists as list}}
     {{ list }} <br>
+{{/endeach}}
+
+{{!-- Associative --}}
+{{#each $data as key,val}}
+    {{ key }}: {{ val }}<br>
 {{/endeach}}
 ```
 
