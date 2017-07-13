@@ -59,3 +59,37 @@ In '/path/to/template' directory, create 'index.vit'
     </body>
 </html>
 ```
+
+## Working with VIT
+
+#### Function: include
+VIT let's you include vit files in '/path/to/template/includes'
+Once VIT is correctly configured, the includes directory will be automatically created.
+
+Create 'header.vit' in the includes directory
+
+header.vit
+```
+This is the header file
+```
+
+Let's include the header in the 'index.vit' file created earlier
+```
+{{#include header}}
+```
+Multiple files can be included, for example, we create a 'nav.vit' file which contains all navigation links
+
+nav.vit
+```
+<nav>
+    <a href="#">Home</a>
+    <a href="#">Download</a>
+  </nav>
+```
+
+Now let's include the header and nav files in the index
+
+index.vit
+```
+{{#include header,nav}}
+```
