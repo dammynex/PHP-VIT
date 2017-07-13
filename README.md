@@ -5,8 +5,9 @@ Minimal PHP template engine.
 
 It's basic, simple and easy to use.
 
-Installation
+Installation:
 
+```php
 <?php
     require_once __DIR__.'/VIT/VITAutoload.php';
-?>
+```
