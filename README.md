@@ -98,6 +98,18 @@ And in vit
     {{ key }}: {{ val }}<br>
 {{/endeach}}
 ```
+Result:
+```
+a
+b
+c
+d
+
+name: Dammy
+nick: nex
+age: 10
+lang: PHP
+```
 
 ##### Includes
 VIT let's you include vit files in '/path/to/template/includes'
