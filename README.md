@@ -130,6 +130,15 @@ DAMMY
 DAM
 ```
 
+Filters can also be used directly inline with strings
+```
+{{ "Hello World!" | strtoupper }}
+```
+
+Result:
+```
+HELLO WORLD
+```
 
 #### Includes
 VIT let's you include vit files in '/path/to/template/includes'
