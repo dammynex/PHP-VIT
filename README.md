@@ -127,7 +127,7 @@ Result:
 ```
 DAMMY
 
-DAM
+dam
 ```
 
 Filters can also be used directly inline with strings
@@ -137,7 +137,7 @@ Filters can also be used directly inline with strings
 
 Result:
 ```
-HELLO WORLD
+HELLO WORLD!
 ```
 
 #### Includes
