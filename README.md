@@ -8,6 +8,18 @@ It's basic, simple and easy to use.
 Installation:
 
 ```php
-<?php
-    require_once __DIR__.'/VIT/VITAutoload.php';
+require_once __DIR__.'/VIT/VITAutoload.php';
+```
+
+```php
+$vitConfig = array('binder' => ['{{','}}'], 'dir' => 'selected template directory');
+
+try {
+
+    $vit = new VIT\VIT($vitConfig);
+    
+} catch(VIT\Exception\Config $e) {
+
+    echo $e->getMessage();
+}
 ```
