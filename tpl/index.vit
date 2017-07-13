@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{ title }}</title>
+    </head>
+    <body>
+    
+        Hello my name is, {{ me[name] }}. I am {{ me[age] }} years old and I'm definitely a {{ me[level] }}
+        
+    </body>
+</html>
