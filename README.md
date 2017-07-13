@@ -132,13 +132,11 @@ VIT
 ```
 
 Result:
-```
 DAMMY
 
 DAM
 
 __DAMMY__
-```
 
 
 #### Includes
