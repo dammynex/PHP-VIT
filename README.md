@@ -5,13 +5,13 @@ Minimal PHP template engine.
 
 It's basic, simple and easy to use.
 
-Installation:
+Installation, Configuration & Setup:
+
+Create a config.php file and setup VIT
 
 ```php
 require_once __DIR__.'/VIT/VITAutoload.php';
-```
 
-```php
 $vitConfig = array('binder' => ['{{','}}'], 'dir' => 'selected template directory');
 
 try {
@@ -23,3 +23,4 @@ try {
     echo $e->getMessage();
 }
 ```
+
