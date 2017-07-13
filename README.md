@@ -62,6 +62,19 @@ In '/path/to/template' directory, create 'index.vit'
 
 ## Working with VIT
 
+#### Assign variables
+Direct assign
+```
+$vit->assign('title', 'VIT');
+$vit->assign('description', 'PHP Template System');
+```
+Multi-Assign
+```
+$vit->assign([
+    'title' => 'VIT',
+    'description', 'PHP Template System'
+]);
+    
 #### Comments
 VIT can be commented
 ```
@@ -70,7 +83,7 @@ VIT can be commented
 #### Arrays, Object
 (Objects are changed to arrays once assigned to vit).
 ```php
-$vit->assign('info', ['title => 'VIT', 'type' => 'Demo']);
+$vit->assign('info', ['title' => 'VIT', 'type' => 'Demo']);
 ```
 
 Then in vit file we can have something like this
