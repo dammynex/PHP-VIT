@@ -74,7 +74,8 @@ $vit->assign([
     'title' => 'VIT',
     'description', 'PHP Template System'
 ]);
-    
+```
+
 #### Comments
 VIT can be commented
 ```
