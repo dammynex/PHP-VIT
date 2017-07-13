@@ -11,6 +11,10 @@
             'dir' => __DIR__.'/tpl'
         ]);
         
+        /** Assign **/
+        $vit->assign('project_name', 'VIT');
+        
+        /** Multi Assign **/
         $vit->assign([
             
             'title' => 'VIT Template engine',
@@ -26,7 +30,7 @@
         $vit->build('index');
         
         
-    } catch (Exception\Build $e) {
+    } catch (\VIT\Exception\Build | \VIT\Exception\Config $e) {
         
         die($e->getMessage());
         
