@@ -62,7 +62,34 @@ In '/path/to/template' directory, create 'index.vit'
 
 ## Working with VIT
 
-#### Function: include
+##### Comments
+VIT can be commented
+```
+{{!-- This is a VIT Comment --}}
+```
+##### Arrays, Object
+(Objects are changed to arrays once assigned to vit).
+```php
+$vit->assign('info', ['title => 'VIT', 'type' => 'Demo']);
+```
+
+Then in vit file we can have something like this
+```
+Hey, this is {{ info[title] }} and we are working on the {{ info[type] }}
+```
+
+Looping through arrays
+```php
+$vit->assign('lists', ['a', 'b', 'c', 'd']);
+```
+And in vit
+```
+{{#each $lists as $list}}
+    {{ list }} <br>
+{{/endeach}}
+```
+
+##### Includes
 VIT let's you include vit files in '/path/to/template/includes'
 Once VIT is correctly configured, the includes directory will be automatically created.
 
@@ -93,3 +120,4 @@ index.vit
 ```
 {{#include header,nav}}
 ```
+
