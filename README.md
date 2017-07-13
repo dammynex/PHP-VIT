@@ -62,12 +62,12 @@ In '/path/to/template' directory, create 'index.vit'
 
 ## Working with VIT
 
-##### Comments
+#### Comments
 VIT can be commented
 ```
 {{!-- This is a VIT Comment --}}
 ```
-##### Arrays, Object
+#### Arrays, Object
 (Objects are changed to arrays once assigned to vit).
 ```php
 $vit->assign('info', ['title => 'VIT', 'type' => 'Demo']);
@@ -80,20 +80,16 @@ Hey, this is {{ info[title] }} and we are working on the {{ info[type] }}
 
 Looping through arrays
 ```php
-#multi-dimensional array
 $vit->assign('lists', ['a', 'b', 'c', 'd']);
 
-#associative array
 $vit->assign('data', ['name' => 'Dammy', 'nick' => 'nex', 'age' => '10', 'lang' => 'PHP']);
 ```
 And in vit
 ```
-{{!-- Multi Dimensional --}}
 {{#each $lists as list}}
     {{ list }} <br>
 {{/endeach}}
 
-{{!-- Associative --}}
 {{#each $data as key,val}}
     {{ key }}: {{ val }}<br>
 {{/endeach}}
@@ -111,7 +107,41 @@ age: 10
 lang: PHP
 ```
 
-##### Includes
+#### Filters
+VIT variable can be filtered using PHP functions
+
+PHP
+```php
+
+function wrapHTML($str, $tagname) {
+    return '<' . $tagname . '>' . $str . '</' . $tagname . '>';
+}
+
+$vit->assign('name', 'dammy');
+```
+VIT
+```
+{{!-- Use filters without args --}}
+{{ name | strtoupper }}
+
+{{!-- With args --}}
+{{name | substr(0, 3) }}
+
+{{!-- wrap html -}}
+{{name | strtoupper | wrapHTML }}
+```
+
+Result:
+```
+DAMMY
+
+DAM
+
+**DAMMY**
+```
+
+
+#### Includes
 VIT let's you include vit files in '/path/to/template/includes'
 Once VIT is correctly configured, the includes directory will be automatically created.
 
