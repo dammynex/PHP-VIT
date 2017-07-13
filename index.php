@@ -1,5 +1,10 @@
 <?php
 
+    /**
+    * This is just a simple example
+    *
+    **/
+
     require_once 'VIT/VITAutoload.php';
 
     use VIT\VIT;
