@@ -36,7 +36,7 @@ try {
     #Assign a variable to vit
     $vit
         #Assign a title variable
-        ->('title', 'VIT Demo page')
+        ->assign('title', 'VIT Demo page')
         
         #Compile and build template
         ->build('index');
