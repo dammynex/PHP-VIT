@@ -225,7 +225,7 @@
         **/
         protected function parseComments($fileData) {
             
-            $moduleRegex = '/\{\{\!\-\-(.*?)\-\-\}\}/s';
+            $moduleRegex = '/\{\{\!\-\-(.*?)\-\-\}\}/';
             return preg_replace($moduleRegex, '', $fileData);
         }
         
