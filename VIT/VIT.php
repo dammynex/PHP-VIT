@@ -182,7 +182,7 @@
         **/
         protected function parseArrays($fileData, $silent = false) {
 
-            $moduleRegex = $this->addBinderRegex('([\s]?+)([a-zA-Z0-9\[\]\s\|]+)([\s]?+)', 'i');
+            $moduleRegex = $this->addBinderRegex('([\s]?+)([a-zA-Z0-9\[\]\s\|\_\-]+)([\s]?+)', 'i');
             $hasMatch = preg_match_all($moduleRegex, $fileData, $matches);
 
             if($hasMatch) {
@@ -660,7 +660,7 @@
         private function getArrayIndexes($arrayData) : array {
 
             $arrayName = $this->removeSpaces(explode('[', $arrayData)[0]);
-            $arrayIndexRegex = preg_match_all('/(\[(\'?)([a-zA-Z0-9]+)(\'?)\])/', $arrayData, $arrayMatches);
+            $arrayIndexRegex = preg_match_all('/(\[(\'?)([a-zA-Z0-9\-\_]+)(\'?)\])/', $arrayData, $arrayMatches);
             $variableValue = $this->getVar($arrayName);
             
             return array('name' => $arrayName, 'indexes' => $arrayMatches[3]);
