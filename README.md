@@ -72,7 +72,7 @@ Multi-Assign
 ```
 $vit->assign([
     'title' => 'VIT',
-    'description', 'PHP Template System'
+    'description' => 'PHP Template System'
 ]);
 ```
 
