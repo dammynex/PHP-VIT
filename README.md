@@ -203,7 +203,7 @@ index.vit
 {{#include header,nav}}
 ```
 
-####in-template assign
+#### in-template assign
 Vit now let you assign variables in itself,
 For instance, you will be calling the upper case of a variable multiple times,
 You can easily re-assign that as another variable in vit
@@ -221,3 +221,36 @@ $vit->assign('title', 'My title goes here');
 
 The capitalized title is {{ upperTitle }}
 ```
+
+#### conditions
+You can also run conditional statements using vit
+
+```
+{{#if $title}}
+
+There is a title, which is {{title}}
+
+{{else}}
+
+No title
+
+{{/endif}}
+```
+
+You can also use the elseif statement for a bit more complex statement
+Note :Very complex condition should be done directly in php before assigned to vit.
+
+```
+{{#if $length < 10 }}
+
+Length is less than 10
+
+{{elseif $length == 10}}
+
+Length is equal to 10
+
+{{else}}
+
+Length is not a number
+
+{{/endif}}
