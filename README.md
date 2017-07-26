@@ -120,6 +120,23 @@ nick: nex
 age: 10
 lang: PHP
 ```
+You can also utilize the eachelse if the variable you want to loop through isn't an array or is undefined.
+
+```
+{{!-- looping through an undefined variable --}}
+{{#each $vars as var}}
+
+var is {{ var }}
+
+{{eachelse}}
+
+No vars assigned
+
+{{/endeach}}
+```
+```
+Result: No vars assigned
+```
 
 #### Filters
 VIT variable can be filtered using PHP functions
@@ -186,3 +203,21 @@ index.vit
 {{#include header,nav}}
 ```
 
+####in-template assign
+Vit now let you assign variables in itself,
+For instance, you will be calling the upper case of a variable multiple times,
+You can easily re-assign that as another variable in vit
+
+```php
+//assign a title var
+$vit->assign('title', 'My title goes here');
+```
+
+```
+{{!-- Assign the capitalized version of title --}}
+{{#assign $upperTitle->( {{ title | strtoupper}} ) }}
+
+{{!-- Then you can call {{ upperTitle }} anywhere else --}}
+
+The capitalized title is {{ upperTitle }}
+```
