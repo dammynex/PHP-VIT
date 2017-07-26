@@ -279,22 +279,40 @@
                     
                     $ifStatement = $this->compileConditionStatement($rawIfStatement);
                     
-                    $ifCondition = $statement = trim($rematches[2]);
+                    $ifConditionStatement = $statement = trim($rematches[2]);
                     $hasElse = preg_match($elseCheckerRegex, $statement);
-                    $elseCondition = '';
+                    $newContent = $elseConditionStatement = '';
                     $hasElseIf = false;
-                    $newContent = '';
 
                     if($hasElse) {
                         $conditions = preg_split($elseCheckerRegex, $statement);
-                        $ifCondition = $conditions[0];
-                        $elseCondition = $conditions[1];
+                        $ifConditionStatement = $conditions[0];
+                        $elseConditionStatement = $conditions[1];
                     }
                     
-                    $hasElseIf = preg_match($elseIfCheckerRegex, $ifCondition);
+                    $hasElseIf = preg_match_all($elseIfCheckerRegex, $ifConditionStatement, $elseIfMatches);
+                    $elseIfConditionStatements = preg_split($elseIfCheckerRegex, $ifConditionStatement);
                     
                     $conditionStatus = $this->getConditionStatus($rawIfStatement);
-                    $newContent = ($conditionStatus) ? $ifCondition : $elseCondition;
+                    if($conditionStatus) $newContent = ($hasElseIf) ? $elseIfConditionStatements[0] : $ifConditionStatement;
+                    
+                    if($hasElseIf) {
+                        
+                        $index = 0;
+                        
+                        foreach($elseIfMatches[2] as $elseIfMatch) {
+                            
+                            if($this->isEmpty($newContent)) {
+                                
+                                $thisConditionStatus = $this->getConditionStatus(trim($elseIfMatch));
+                                $newContent = ($thisConditionStatus) ? $elseIfConditionStatements[$index + 1] : '';
+                            }
+                            $index++;
+                        }
+                    }
+                    
+                    if($this->isEmpty($newContent)) $newContent = $elseConditionStatement;
+                    
                     $fileData = str_replace($match, $this->parseConditions($newContent), $fileData);
                 }
             }
@@ -644,7 +662,7 @@
         private function compileConditionStatement($str, $withQuotes = false) {
             
             $pregValue = "{$this->_binder[0]}$1{$this->_binder[1]}";
-            $val = ($withQuotes) ? "'{$pregValue}}'" : "{$pregValue}";
+            $val = ($withQuotes) ? "'{$pregValue}'" : "{$pregValue}";
             
             return $this->parseStrings(
                 $this->parseArrays(
@@ -692,7 +710,7 @@
             if($this->hasOperator($statement)) {
                         
                 $ifStatement = $this->compileConditionStatement($statement, true);
-                if($this->runFunction($statement)) $conditionStatus = true;
+                if($this->runFunction($ifStatement)) $conditionStatus = true;
 
             } else {
 
@@ -729,6 +747,14 @@
         private function hasOperator($str) : bool {
 
             return preg_match('/([(\=\=)|(\=\=\=)|(\&\&)|(\<\=)|(\>\=)|(\>)|(\<)]+)/i', $str);
+        }
+        
+        /**
+        * Check if content is empty
+        */
+        private function isEmpty($content) {
+            
+            return !(strlen(trim($content)) > 0);
         }
         
         /**
