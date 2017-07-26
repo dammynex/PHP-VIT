@@ -222,7 +222,7 @@ $vit->assign('title', 'My title goes here');
 The capitalized title is {{ upperTitle }}
 ```
 
-#### conditions
+#### Conditions
 You can also run conditional statements using vit
 
 ```
@@ -237,8 +237,9 @@ No title
 {{/endif}}
 ```
 
-You can also use the elseif statement for a bit more complex statement
-Note :Very complex condition should be done directly in php before assigned to vit.
+You can also use the elseif statement for a bit more complex condition
+
+Note: Very complex condition should be done directly in php before assigned to vit.
 
 ```
 {{#if $length < 10 }}
