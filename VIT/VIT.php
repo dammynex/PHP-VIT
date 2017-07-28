@@ -14,36 +14,70 @@
     class VIT
     {
         
-        #Version
+        /**
+        * vit's version
+        */
         const VERSION = '0.9';
         
-        #Vit allowed var chars
+        /**
+        * Allowed variable regex
+        *
+        * @var string
+        */
         protected $_allowed_vars = '([\s]?+)([a-zA-Z0-9_]+)([\s]?+)';
         
-        #Vit Binder
+        /**
+        * Vit variables binder
+        *
+        * @var array
+        */
         protected $_binder = array();
         
-        #Vit's default binder
+        /**
+        * Default binder
+        *
+        * @var array
+        */
         protected $_default_binder = array('{{', '}}');
         
-        #Vit build directory
+        /**
+        * Templates directory
+        *
+        * @var string
+        */
         protected $_dir;
         
-        #Vit file extension
+        /**
+        * Vit file extension
+        *
+        * @var string
+        */
         protected $_file_ext = 'vit';
         
-        #Vit false statements
+        /**
+        * Strings considered false
+        *
+        * @var array
+        */
         protected $_false_statements = array('false', '0', 'null', '', 'undefined');
         
-        #Vit includes dir
+        /**
+        * Includes directory
+        *
+        * @var string
+        */
         protected $_include_dir;
         
-        #Vit variables
+        /**
+        * Assigned vit variables
+        *
+        * @var array
+        */
         private $_vars = array();
         
         /**
         * Constructor
-        * @Param {array} $config Vit configuration
+        * @param {array} $config Vit configuration
         **/
         public function __construct(array $config) {
             
@@ -71,8 +105,8 @@
         
         /**
         * Assign new variable to vit
-        * @Param {string|array} $name Variable name|Associative array of variables
-        * @Param {string|null} $value Variable values|null
+        * @param {string|array} $name Variable name|Associative array of variables
+        * @param {string|null} $value Variable values|null
         **/
         public function assign($name, $value = '') {
             
@@ -96,8 +130,8 @@
         
         /**
         * Build & Interprete vit from file
-        * @Param {string} $filename File to build
-        * @Param {bool} $exec Execute result or return result
+        * @param {string} $filename File to build
+        * @param {bool} $exec Execute result or return result
         **/
         public function build($filename, $exec = true) {
             
@@ -117,7 +151,7 @@
 
         /**
         * Build & Interprete vit from string
-        * @Param {string} $fileData String to build
+        * @param {string} $fileData String to build
         **/
         public function buildFromStr($str) {
             
@@ -126,7 +160,7 @@
 
         /**
         * Interpret vit components, Parse vit modules
-        * @Param {string} $fileData Vit file data
+        * @param {string} $fileData Vit file data
         **/
         public function buildModule($fileData) {
             
@@ -157,7 +191,7 @@
         
         /**
         * Bind vit variables
-        * @Param {string} $fileData Vit file data
+        * @param {string} $fileData Vit file data
         **/
         protected function bind($fileData) {
             
@@ -178,7 +212,7 @@
 
         /**
         * Parse in-template assign
-        * @Param {string} $fileData Vit file data
+        * @param {string} $fileData Vit file data
         */
         protected function parseAssign($fileData) {
             
@@ -204,8 +238,8 @@
         
         /**
         * Parse vit's array statements
-        * @Param {string} $fileData Vit file data
-        * @Param {boolean} $silent Silent/Throw error for undefined values
+        * @param {string} $fileData Vit file data
+        * @param {boolean} $silent Silent/Throw error for undefined values
         **/
         protected function parseArrays($fileData, $silent = false, $return = true) {
 
@@ -231,7 +265,7 @@
 
         /**
         * Runs vit mini calculations
-        * @Param {string} $fileData Vit file data
+        * @param {string} $fileData Vit file data
         **/
         protected function parseCalculations($fileData) {
 
@@ -259,7 +293,7 @@
         
         /**
         * Parse vit's conditional statements
-        * @Param {string} $fileData Vit file data
+        * @param {string} $fileData Vit file data
         **/
         protected function parseConditions($fileData) {
 
@@ -277,7 +311,7 @@
                     
                     $rawIfStatement = trim($rematches[1]);
                     
-                    $ifStatement = $this->compileConditionStatement($rawIfStatement);
+                    $ifStatement = $this->compileConditionStatement($rawIfStatement, false, true);
                     
                     $ifConditionStatement = $statement = trim($rematches[2]);
                     $hasElse = preg_match($elseCheckerRegex, $statement);
@@ -321,7 +355,7 @@
 
         /**
         * Parse vit's each statement
-        * @Param {string} $fileData Vit file data
+        * @param {string} $fileData Vit file data
         **/
         protected function parseEach($fileData) {
 
@@ -402,7 +436,7 @@
 
         /**
         * Parse vit variable filters
-        * @Param {string} $fileData Vit filedata
+        * @param {string} $fileData Vit filedata
         **/
         protected function parseFilters($fileData) : string {
 
@@ -433,7 +467,7 @@
         
         /**
         * Parse file inclusions
-        * @Param {string} $fileData Vit file data
+        * @param {string} $fileData Vit file data
         **/
         protected function parseIncludes($fileData) {
 
@@ -514,7 +548,7 @@
 
         /**
         * Parse stand-alone string modules
-        * @Param {string} $fileData Vit file data to parse
+        * @param {string} $fileData Vit file data to parse
         **/
         protected function parseStrings($fileData) : string {
 
@@ -556,7 +590,7 @@
         
         /**
         * Adds binder to string
-        * @Param {string} $str String to add binder to
+        * @param {string} $str String to add binder to
         **/
         private function addBinder($str) : string {
             
@@ -565,7 +599,7 @@
 
         /**
         * Adds file extension to string
-        * @Param {string} $filename File name to add extension
+        * @param {string} $filename File name to add extension
         **/
         private function addFileExtension($filename) : string {
 
@@ -574,8 +608,8 @@
 
         /**
         * Add binder in regex format to regex
-        * @Param {string} $regex RegExp string to add binder with
-        * @Param {string} $flags RegExp flags
+        * @param {string} $regex RegExp string to add binder with
+        * @param {string} $flags RegExp flags
         **/
         private function addBinderRegex($regex, $flags = '') : string {
             
@@ -586,7 +620,7 @@
 
         /**
         * Runs vit array compilation
-        * @Param {string} $arrayData Vit array string
+        * @param {string} $arrayData Vit array string
         **/
         private function compileArray($arrayData, $silent = false) {
 
@@ -603,7 +637,7 @@
 
                 } elseif($silent) {
                     
-                    return 'undefined';
+                    return 0;
                     
                 } else {
                     
@@ -617,8 +651,8 @@
 
         /**
         * Add parsed filters
-        * @Param {string} $variableValue
-        * @Param {array} $filters
+        * @param {string} $variableValue
+        * @param {array} $filters
         **/
         private function compileFilters($variableValue, array $filters) {
             
@@ -655,10 +689,10 @@
         
         /**
         * Compile vit condtion statement to full bind-able sent
-        * @Param {string} $str String to compile
-        * @Param {boolen} $withQuotes Add quotes or not
+        * @param {string} $str String to compile
+        * @param {boolen} $withQuotes Add quotes or not
         **/
-        private function compileConditionStatement($str, $withQuotes = false) {
+        private function compileConditionStatement($str, $withQuotes = false, $silent = false) {
             
             $pregValue = "{$this->_binder[0]}$1{$this->_binder[1]}";
             $val = ($withQuotes) ? "'{$pregValue}'" : "{$pregValue}";
@@ -669,15 +703,16 @@
                         '/\$([a-zA-Z0-9\[\]]+)/i',
                         $val,
                         $str
-                    )
+                    ),
+                    $silent
                 )
             );
         }
         
         /**
         * Escape regex strings
-        * @Param {string} $regex RegExp chars to escape
-        * @Param {string} $flags RegExp flags
+        * @param {string} $regex RegExp chars to escape
+        * @param {string} $flags RegExp flags
         **/
         private function escapeRegex($regex, $flags = '') : string {
             
@@ -686,7 +721,7 @@
         
         /**
         * Get the array key and array index(es)
-        * @Param {string} $arrayData Vit array string
+        * @param {string} $arrayData Vit array string
         **/
         private function getArrayIndexes($arrayData) : array {
 
@@ -699,8 +734,8 @@
 
         /**
         * Get condition status
-        * @Param {string} $statement
-        * @Param {string} $variableValue
+        * @param {string} $statement
+        * @param {string} $variableValue
         */
         private function getConditionStatus($statement) {
             
@@ -709,12 +744,12 @@
             if($statement) {
                 if($this->hasOperator($statement)) {
 
-                    $ifStatement = $this->compileConditionStatement($statement, true);
+                    $ifStatement = $this->compileConditionStatement($statement, true, true);
                     if($this->runFunction($ifStatement)) $conditionStatus = true;
 
                 } else {
                     
-                    $statement = $this->compileConditionStatement($statement, false);
+                    $statement = $this->compileConditionStatement($statement, false, true);
                     $variableValue = $this->parseStrings($this->parseArrays($statement, true));
                     $isOtherWise = (substr($variableValue, 0, 1) === '!');
 
@@ -731,7 +766,7 @@
         
         /**
         * Get local file link
-        * @Param {string} $filename Vit filename without extension
+        * @param {string} $filename Vit filename without extension
         **/
         private function getFileLink(string $filename) : string {
             return "{$this->_dir}/{$filename}.{$this->_file_ext}";
@@ -739,7 +774,7 @@
 
         /**
         * Get value of vit variable
-        * @Param {string} $name Variable name
+        * @param {string} $name Variable name
         **/
         private function getVar($name) {
             return $this->_vars[$name] ?? null;
@@ -760,7 +795,7 @@
         
         /**
         * Convert object/array object to array
-        * @Param {object} $obj Object to convert
+        * @param {object} $obj Object to convert
         **/
         private function objectToArray($obj) {
 
@@ -785,7 +820,7 @@
 
         /**
         * Run anonymous function
-        * @Param {string} $fn Function to run
+        * @param {string} $fn Function to run
         **/
         private function runFunction($fn) {
             
@@ -795,7 +830,7 @@
 
         /**
         * Remove all spaces in string
-        * @Param {string} $str String to remove spaces
+        * @param {string} $str String to remove spaces
         */
         private function removeSpaces($str) : string {
             
@@ -804,8 +839,8 @@
         
         /**
         * Set vit variable
-        * @Param {string} $name Variable name
-        * @Param {string} $value Variable value
+        * @param {string} $name Variable name
+        * @param {string} $value Variable value
         **/
         private function setVar($name, $value) : void {
             
@@ -814,7 +849,7 @@
         
         /**
         * Strip vit binder
-        * @Param {string} $str VIT file data
+        * @param {string} $str VIT file data
         **/
         private function stripBinder($str) : string {
             
@@ -823,7 +858,7 @@
         
         /**
         * Check if array is associative array
-        * @Param {array} $arr Array to check
+        * @param {array} $arr Array to check
         **/
         private function isAssocArray($arr) : bool {
             
