@@ -183,8 +183,10 @@
             $parseCalculations = $this->parseCalculations($parseArrays);
             
             $parseOneWayConditions = $this->parseOneWayConditions($parseCalculations);
+            
+            $parseOneConditions = $this->parseOneConditions($parseOneWayConditions);
 
-            $parseStringVars = $this->parseStringVars($parseOneWayConditions);
+            $parseStringVars = $this->parseStringVars($parseOneConditions);
             
             return $parseStringVars;
         }
@@ -545,6 +547,34 @@
             
             return $fileData;
         }
+        
+        /**
+        * Parse inline conditions
+        * @param {string} $filedata VIT file data
+        *
+        */
+        protected function parseOneConditions($fileData) : string {
+            
+            $moduleRegex = '/\{\{([\s]?+)(.*?)\?\?(.*?)([\s]?+)\}\}/';
+            
+            $hasMatch = preg_match_all($moduleRegex, $fileData, $matches);
+            
+            if($hasMatch) {
+                
+                foreach($matches[0] as $match) {
+                    
+                    $rematch = preg_match($moduleRegex, $fileData, $rematches);
+                    
+                    $mainValue = $this->compileConditionStatement(trim($rematches[2]));
+                    $otherwiseValue = $this->compileConditionStatement(trim($rematches[3]));
+                    
+                    $newContent = ($this->isEmpty($mainValue)) ? $otherwiseValue : $mainValue;
+                    $fileData = str_replace($match, $newContent, $fileData);
+                }
+            }
+            
+            return $fileData;
+        }
 
         /**
         * Parse stand-alone string modules
@@ -700,7 +730,7 @@
             return $this->parseStrings(
                 $this->parseArrays(
                    preg_replace(
-                        '/\$([a-zA-Z0-9\[\]]+)/i',
+                        '/\$([a-zA-Z0-9\[\]\_]+)/i',
                         $val,
                         $str
                     ),
@@ -782,7 +812,7 @@
 
         private function hasOperator($str) : bool {
 
-            return preg_match('/([(\=\=)|(\=\=\=)|(\&\&)|(\<\=)|(\>\=)|(\>)|(\<)]+)/i', $str);
+            return preg_match('/([(\=\=)|(\=\=\=)|(\&\&)|(\<\=)|(\>\=)|(\>)|(\<)|(\|\|)]+)/i', $str);
         }
         
         /**
