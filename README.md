@@ -255,3 +255,17 @@ Length is equal to 10
 Length is not a number
 
 {{/endif}}
+
+#### Direct conditions
+This is similar to PHP 7's "??"
+If the first variable is undefined or null, it returns an alternate assigned value
+
+eg, We create a header file with title as a variable and we want it add a default title if a custom title isn't assigned we can basically do this
+```
+{{ ($title) ? {{title}} : Default title }}
+```
+
+Or shorter
+```
+{{ $title ?? Default title }}
+```
