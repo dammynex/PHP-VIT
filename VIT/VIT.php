@@ -82,7 +82,7 @@
                     $this->setVar($var, $this->objectToArray($val));
                 });
             
-            } elseif($name && null !== $value) {
+            } elseif($name) {
                 
                 $this->setVar($name, $this->objectToArray($value));
             
@@ -148,7 +148,7 @@
             
             $parseCalculations = $this->parseCalculations($parseArrays);
             
-            $parseOneWayConditions = $this->parseOneWayConditions($parseArrays);
+            $parseOneWayConditions = $this->parseOneWayConditions($parseCalculations);
 
             $parseStringVars = $this->parseStringVars($parseOneWayConditions);
             
@@ -168,7 +168,6 @@
             if($hasMatch) {
                 
                 foreach($matches[0] as $match) {
-                    
                     $cleanVar = $this->removeSpaces($this->stripBinder($match));
                     $fileData = str_replace($match, $this->getVar($cleanVar), $fileData);
                 }
@@ -208,7 +207,7 @@
         * @Param {string} $fileData Vit file data
         * @Param {boolean} $silent Silent/Throw error for undefined values
         **/
-        protected function parseArrays($fileData, $silent = false) {
+        protected function parseArrays($fileData, $silent = false, $return = true) {
 
             $moduleRegex = $this->addBinderRegex('([\s]?+)([a-zA-Z0-9\[\]\s\|\_\-]+)([\s]?+)', 'i');
             $hasMatch = preg_match_all($moduleRegex, $fileData, $matches);
@@ -222,7 +221,8 @@
                     $variableVars = explode('|', $rawMatch);
                     $filters = count($variableVars > 0) ? array_splice($variableVars, 1) : [];
                     $value = $this->compileFilters($this->compileArray($variableVars[0], $silent), $filters);
-                    $fileData = str_replace($match, $value, $fileData);
+                    $rvalue = is_array($value) ? 'Array' : $value;
+                    $fileData = str_replace($match, $rvalue, $fileData);
                 }
             }
 
@@ -235,16 +235,16 @@
         **/
         protected function parseCalculations($fileData) {
 
-            $moduleRegex = $this->addBinderRegex('#([\s]?+)\((.*?)\)([\s]?+)');
+            $moduleRegex = $this->addBinderRegex('\#([\s]?+)\((.*?)\)([\s]?+)');
             $hasMatch = preg_match_all($moduleRegex, $fileData, $matches);
 
             foreach($matches[0] as $match) {
-
+                
                 $rematch = preg_match($moduleRegex, $match, $rematches);
-                $calculation = $this->removeSpaces($rematches[2]);
+                $calculation = $this->compileConditionStatement($rematches[2]);
                 $fileData = str_replace($match, $this->runFunction($calculation), $fileData);
             }
-
+            
             return $fileData;
         }
 
@@ -355,7 +355,7 @@
                     $elseStatementContent = $statementVars[1];
                 }
                 
-                $mainVariableValue = $this->compileArray($mainVariableName) ?? $this->getVar($mainVariableName);
+                $mainVariableValue = $this->compileArray($mainVariableName, true) ?? $this->getVar($mainVariableName);
                 
                 if(is_array($mainVariableValue)) {
 
@@ -406,7 +406,7 @@
         **/
         protected function parseFilters($fileData) : string {
 
-            $moduleRegex = $this->addBinderRegex('([a-z0-9\|\s\\\\(\)\,\<\>\/\-]+)', 'i');
+            $moduleRegex = $this->addBinderRegex('([a-z0-9\|\s\\\\(\)\,\<\>\/\-\:]+)', 'i');
             $hasMatch = preg_match_all($moduleRegex, $fileData, $matches);
 
             if($hasMatch) {
@@ -502,8 +502,7 @@
                     $trueCondition = trim($rematches[5]);
                     $falseCondition = trim($rematches[6]);
                     
-                    $condition = $this->compileConditionStatement($rawCondition);
-                    $conditionStatus = $this->getConditionStatus($condition);
+                    $conditionStatus = $this->getConditionStatus($rawCondition);
                     
                     $newContent = ($conditionStatus) ? $trueCondition : $falseCondition;
                     $fileData = str_replace($match, $newContent, $fileData);
@@ -707,22 +706,24 @@
             
             $conditionStatus = false;
             
-            if($this->hasOperator($statement)) {
-                        
-                $ifStatement = $this->compileConditionStatement($statement, true);
-                if($this->runFunction($ifStatement)) $conditionStatus = true;
+            if($statement) {
+                if($this->hasOperator($statement)) {
 
-            } else {
+                    $ifStatement = $this->compileConditionStatement($statement, true);
+                    if($this->runFunction($ifStatement)) $conditionStatus = true;
 
-                $statement = $this->addBinder(substr($statement, 1));
-                $variableValue = $this->parseStrings($this->parseArrays($statement, true));
-                $isOtherWise = (substr($variableValue, 0, 1) === '!');
+                } else {
+                    
+                    $statement = $this->compileConditionStatement($statement, false);
+                    $variableValue = $this->parseStrings($this->parseArrays($statement, true));
+                    $isOtherWise = (substr($variableValue, 0, 1) === '!');
 
-                if($isOtherWise) $variableValue = substr($variableValue, 1);
+                    if($isOtherWise) $variableValue = substr($variableValue, 1);
 
-                $conditionStatus = !(in_array($variableValue, $this->_false_statements)) ? true : false;
-                if($isOtherWise) $conditionStatus = !$conditionStatus;
+                    $conditionStatus = !(in_array($variableValue, $this->_false_statements)) ? true : false;
+                    if($isOtherWise) $conditionStatus = !$conditionStatus;
 
+                }
             }
             
             return $conditionStatus;
