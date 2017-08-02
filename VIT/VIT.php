@@ -564,9 +564,8 @@
                 foreach($matches[0] as $match) {
                     
                     $rematch = preg_match($moduleRegex, $fileData, $rematches);
-                    
-                    $mainValue = $this->compileConditionStatement(trim($rematches[2]));
-                    $otherwiseValue = $this->compileConditionStatement(trim($rematches[3]));
+                    $mainValue = @$this->compileConditionStatement(trim($rematches[2]));
+                    $otherwiseValue = @$this->compileConditionStatement(trim($rematches[3]));
                     
                     $newContent = ($this->isEmpty($mainValue)) ? $otherwiseValue : $mainValue;
                     $fileData = str_replace($match, $newContent, $fileData);
@@ -590,7 +589,7 @@
 
         protected function parseStringVars($fileData) : string {
             
-            $moduleRegex = $this->addBinderRegex('([\s]?+)\"(.*?)\"(.*?)', 'i');
+            $moduleRegex = $this->addBinderRegex('([\s]?+)(\"|\')(.*?)(\"|\')(.*?)', 'i');
             
             $hasMatch = preg_match_all($moduleRegex, $fileData, $matches);
             
@@ -599,9 +598,8 @@
                 foreach($matches[0] as $match) {
                     
                     $rematch = preg_match($moduleRegex, $match, $rematches);
-                    
-                    $varContent = $rematches[2];
-                    $varFilters = $this->removeSpaces($rematches[3]);
+                    $varContent = $rematches[3];
+                    $varFilters = $this->removeSpaces($rematches[5]);
                     $hasVarFilters = [];
                     
                     if(!empty($varFilters)) {
