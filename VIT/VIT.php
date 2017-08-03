@@ -592,7 +592,7 @@
 
         protected function parseStringVars($fileData) : string {
             
-            $moduleRegex = $this->addBinderRegex('([\s]?+)\"(.*?)\"(.*?)', 'i');
+            $moduleRegex = $this->addBinderRegex('([\s]?+)(\"|\')(.*?)(\"|\')(.*?)', 'i');
             
             $hasMatch = preg_match_all($moduleRegex, $fileData, $matches);
             
@@ -602,8 +602,8 @@
                     
                     $rematch = preg_match($moduleRegex, $match, $rematches);
                     
-                    $varContent = $rematches[2];
-                    $varFilters = $this->removeSpaces($rematches[3]);
+                    $varContent = $rematches[3];
+                    $varFilters = $this->removeSpaces($rematches[5]);
                     $hasVarFilters = [];
                     
                     if(!empty($varFilters)) {
