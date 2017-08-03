@@ -299,7 +299,7 @@
         **/
         protected function parseConditions($fileData) {
 
-            $moduleRegex = '/\{\{#if(.*?)\}\}(((?R)}|.)*?)\{\{\/([\s]?+)endif([\s]?+)\}\}/is';
+            $moduleRegex = '/\{\{#if(.*?)\}\}(((?R)|.)*?)\{\{\/([\s]?+)endif([\s]?+)\}\}/is';
             $elseCheckerRegex = '/\{\{([\s]?+)else([\s]?+)\}\}/i';
             $elseIfCheckerRegex = '/\{\{([\s]?+)elseif(.*?)\}\}/i';
             
@@ -310,12 +310,11 @@
                 foreach($matches[0] as $match) {
                     
                     $rematch = preg_match($moduleRegex, $match, $rematches);
-                    
                     $rawIfStatement = trim($rematches[1]);
                     
                     $ifStatement = $this->compileConditionStatement($rawIfStatement, false, true);
                     
-                    $ifConditionStatement = $statement = trim($rematches[2]);
+                    $ifConditionStatement = $statement = trim($this->parseConditions($rematches[2]));
                     $hasElse = preg_match($elseCheckerRegex, $statement);
                     $newContent = $elseConditionStatement = '';
                     $hasElseIf = false;
@@ -564,8 +563,12 @@
                 foreach($matches[0] as $match) {
                     
                     $rematch = preg_match($moduleRegex, $fileData, $rematches);
-                    $mainValue = @$this->compileConditionStatement(trim($rematches[2]));
-                    $otherwiseValue = @$this->compileConditionStatement(trim($rematches[3]));
+                    
+                    $mainValueContent = $rematches[2] ?? '';
+                    $otherwiseValueContent = $rematches[3] ?? '';
+
+                    $mainValue = $this->compileConditionStatement(trim($mainValueContent));
+                    $otherwiseValue = $this->compileConditionStatement(trim($otherwiseValueContent));
                     
                     $newContent = ($this->isEmpty($mainValue)) ? $otherwiseValue : $mainValue;
                     $fileData = str_replace($match, $newContent, $fileData);
@@ -589,7 +592,7 @@
 
         protected function parseStringVars($fileData) : string {
             
-            $moduleRegex = $this->addBinderRegex('([\s]?+)(\"|\')(.*?)(\"|\')(.*?)', 'i');
+            $moduleRegex = $this->addBinderRegex('([\s]?+)\"(.*?)\"(.*?)', 'i');
             
             $hasMatch = preg_match_all($moduleRegex, $fileData, $matches);
             
@@ -598,8 +601,9 @@
                 foreach($matches[0] as $match) {
                     
                     $rematch = preg_match($moduleRegex, $match, $rematches);
-                    $varContent = $rematches[3];
-                    $varFilters = $this->removeSpaces($rematches[5]);
+                    
+                    $varContent = $rematches[2];
+                    $varFilters = $this->removeSpaces($rematches[3]);
                     $hasVarFilters = [];
                     
                     if(!empty($varFilters)) {
