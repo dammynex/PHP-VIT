@@ -24,7 +24,7 @@
         *
         * @var string
         */
-        protected $_allowed_vars = '([\s]?+)([a-zA-Z0-9_]+)([\s]?+)';
+        protected $_allowed_vars = '([\s]?+)([a-zA-Z0-9_\\\:]+)([\s]?+)';
         
         /**
         * Vit variables binder
@@ -190,7 +190,7 @@
             
             return $parseStringVars;
         }
-        
+
         /**
         * Bind vit variables
         * @param {string} $fileData Vit file data
@@ -245,7 +245,7 @@
         **/
         protected function parseArrays($fileData, $silent = false, $return = true) {
 
-            $moduleRegex = $this->addBinderRegex('([\s]?+)([a-zA-Z0-9\[\]\s\|\_\-]+)([\s]?+)', 'i');
+            $moduleRegex = $this->addBinderRegex('([\s]?+)([a-zA-Z0-9\[\]\s\|\_\-\\\:\(\)\$]+)([\s]?+)', 'i');
             $hasMatch = preg_match_all($moduleRegex, $fileData, $matches);
 
             if($hasMatch) {
@@ -366,9 +366,9 @@
             $hasMatch = preg_match_all($moduleRegex, $fileData, $matches);
 
             foreach($matches[0] as $match) {
-
+                
                 $rematch = preg_match($moduleRegex, $match, $rematches);
-                $statement = trim($rematches[2]);
+                $statement = trim($this->parseEach($rematches[2]));
                 $ifStatementContent = $statementContent = $rematches[3];
                 $elseStatementContent = $newContent = '';
                 $explodedStatement = explode("as", $statement);
@@ -441,13 +441,13 @@
         **/
         protected function parseFilters($fileData) : string {
 
-            $moduleRegex = $this->addBinderRegex('([a-z0-9\|\s\\\\(\)\,\<\>\/\-\:]+)', 'i');
+            $moduleRegex = $this->addBinderRegex('([a-z0-9\|\s\\\(\)\,\<\>\/\-\:\$]+)', 'i');
             $hasMatch = preg_match_all($moduleRegex, $fileData, $matches);
 
             if($hasMatch) {
 
                 foreach($matches[0] as $match) {
-
+                    
                     $filteredMatch = $this->removeSpaces($this->stripBinder($match));
                     $filteredVars = explode('|', $filteredMatch);
                     $variableName = $filteredVars[0];
@@ -696,15 +696,21 @@
 
                     $filterName = $this->removeSpaces($filterName);
                     $filterFunctionVars = explode('(', $filterName);
-                    $filterFunctionName = $filterFunctionVars[0];
+                    $filterFunctionName = $this->compileConditionStatement($filterFunctionVars[0]);
                     $functionArgs = str_replace(')', '', $filterFunctionVars[1]);
                     $filterFunctionArgs = array_merge([$variableValue], explode(',', $functionArgs));
+                    $compiledFilterFunctionArgs = [];
+
+                    foreach($filterFunctionArgs as $filterFunctionArg) {
+
+                        $compiledFilterFunctionArgs[] = $this->compileConditionStatement($filterFunctionArg);
+                    }
 
                     if(!\is_callable($filterFunctionName)) {
                         throw new BuildException('undefined function <b>'.$filterFunctionName.'</b>');
                     }
 
-                    $variableValue = call_user_func_array($filterFunctionName, $filterFunctionArgs);
+                    $variableValue = call_user_func_array($filterFunctionName, $compiledFilterFunctionArgs);
                 }
 
                 if(!$hasArgs) {
@@ -829,25 +835,22 @@
         * Convert object/array object to array
         * @param {object} $obj Object to convert
         **/
-        private function objectToArray($obj) {
+        private function objectToArray ($object) {
 
-            if(is_object($obj)) {
+            if(is_object($object)) $object = (array) $object;
 
-                $new = (array) $obj;
+            if(is_array($object)) {
 
-            } elseif(is_array($obj)) {
+                $arr = array();
 
-                $new = [];
+                foreach($object as $key => $val) {
 
-                foreach($obj as $key => $val) {
-                    $new[$key] = $this->objectToArray($val);
+                    $arr[$key] = $this->objectToArray($val);
                 }
-
-            } else {
-                $new = $obj;
             }
-            
-            return $new;
+            else $arr = $object;
+
+            return $arr;
         }
 
         /**
