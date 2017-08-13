@@ -691,7 +691,7 @@
             foreach($filters as $filterName) {
 
                 $hasArgs = preg_match('/[\(\)]/', $filterName);
-
+                
                 if($hasArgs) {
 
                     $filterName = $this->removeSpaces($filterName);
@@ -700,7 +700,7 @@
                     $functionArgs = str_replace(')', '', $filterFunctionVars[1]);
                     $filterFunctionArgs = array_merge([$variableValue], explode(',', $functionArgs));
                     $compiledFilterFunctionArgs = [];
-
+                    
                     foreach($filterFunctionArgs as $filterFunctionArg) {
 
                         $compiledFilterFunctionArgs[] = $this->compileConditionStatement($filterFunctionArg);
@@ -709,17 +709,19 @@
                     if(!\is_callable($filterFunctionName)) {
                         throw new BuildException('undefined function <b>'.$filterFunctionName.'</b>');
                     }
-
+                    
                     $variableValue = call_user_func_array($filterFunctionName, $compiledFilterFunctionArgs);
                 }
 
                 if(!$hasArgs) {
 
-                    if(!is_callable($filterName)) {
-                        throw new BuildException('undefined function <b>'. $filterName .'</b>');
-                    }
+                    $filterFunctionName = $this->compileConditionStatement($filterName);
 
-                    $variableValue = $filterName($variableValue);
+                    if(!is_callable($filterFunctionName)) {
+                        throw new BuildException('undefined function <b>'. $filterFunctionName .'</b>');
+                    }
+                    
+                    $variableValue = $filterFunctionName($variableValue);
                 }
             }
             return $variableValue;
