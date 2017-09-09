@@ -22,7 +22,7 @@ try {
             'title' => 'VIT Examples',
 
             //my name
-            'name' => 'Damilola Ezekiel',
+            'name' => 'dammy',
 
             'height' => 45,
 
