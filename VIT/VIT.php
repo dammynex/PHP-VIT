@@ -360,7 +360,7 @@
         **/
         protected function parseEach($fileData) {
 
-            $moduleRegex = '/\{\{#([\s]?+)each(.*?)\}\}(((?R)|.)*?)\{\{\/([\s]?+)endeach([\s]?+)\}\}/is';
+            $moduleRegex = '/\{\{#([\s]?+)each(.*?)\}\}((.*?)|(?R))\{\{\/([\s]?+)endeach([\s]?+)\}\}/is';
             $eachElseRegex = '/\{\{([\s]?+)eachelse([\s]?+)\}\}/';
             
             $hasMatch = preg_match_all($moduleRegex, $fileData, $matches);
