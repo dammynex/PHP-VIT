@@ -1,0 +1,45 @@
+{{#include header}}
+
+Hello, my name is {{ name | strtoupper }} and I am skilled in the following areas:
+
+{{!-- Working With Each --}}
+
+<ul>
+    {{#each $skills as skill,percentage}}
+    
+    <li>
+        {{ skill }}: {{ percentage }}
+    </li>
+
+    {{/endeach}}
+</ul>
+
+{{!-- Arrays --}}
+
+<b>
+    Oh my PHP skill is: <b>{{ skills[PHP] }}</b>
+</b>
+
+
+{{!-- Simple math --}}
+
+<div>
+    <b>5</b> * <b>10</b> = {{# (5 * 10) }}
+</div>
+
+{{#if $height > 45}}
+
+Oh you're too tall
+
+{{elseif $height == 45}}
+
+Okay, moderate height
+
+{{elseif $height < 45}}
+
+Nah, your short
+
+{{/endif}}
+
+
+{{#include footer}}
